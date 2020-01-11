@@ -93,6 +93,6 @@ if __name__ == '__main__':
             else:
                 print ('{} {}'.format(a, b),file=f)
 
-    print ('{}'.format (np.trapz(y, x)))
+    print ('# dG = {}'.format (np.trapz(y, x)))
 
 # %%

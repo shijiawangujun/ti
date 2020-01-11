@@ -1,0 +1,23 @@
+# source the leaprc that you need
+source leaprc.protein.ff15ipq
+source leaprc.water.tip3p
+source leaprc.gaff
+loadAmberParams frcmod.ionsjc_tip3p
+
+# load the force field which amber doesn't process
+
+# load the coordinates and create the systems
+m1 = loadpdb $basedir/curk.pdb
+m2 = loadpdb $basedir/curkpvv.pdb
+
+complex = combine {m1 m2}
+charge complex
+set default nocenter on
+
+# create complex in solution
+addions complex Na+ 14
+solvateoct complex TIP3PBOX 8
+savepdb complex complex.pdb
+saveamberparm complex complex.parm7 complex.rst7
+
+quit
