@@ -11,7 +11,6 @@ function myfunction()
     entest=$?
 }
 
-
 #start from 0 
 export CUDA_VISIBLE_DEVICES="2"
 cd $PBS_O_WORKDIR
