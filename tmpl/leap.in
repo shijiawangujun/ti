@@ -7,8 +7,8 @@ loadAmberParams frcmod.ionsjc_tip3p
 # load the force field which amber doesn't process
 
 # load the coordinates and create the systems
-m1 = loadpdb $basedir/curk.pdb
-m2 = loadpdb $basedir/curkpvv.pdb
+m1 = loadpdb $basedir/your_v0.pdb
+m2 = loadpdb $basedir/your_v1.pdb
 
 complex = combine {m1 m2}
 charge complex

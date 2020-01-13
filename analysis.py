@@ -74,7 +74,8 @@ elif extrap == 'polyfit' and (0.0 not in x or 1.0 not in x):
         x.append(1.0)
         y.append(sum(coeffs) )
 
-with open('dvdl.dat','w') as f:
+# Write to the dVdl.dat file
+with open('dVdl.dat','w') as f:
     for a, b in zip(x, y):
         if a in data.index:
             v = data.loc[a]
