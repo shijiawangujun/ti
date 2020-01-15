@@ -1,4 +1,5 @@
 #!/bin/bash
+basedir=$(cd $(dirname $0);pwd -P)
 
 echo "This is the setup program for thermodynamic intergal"
 echo "Supported by SJTU CCMBI"
@@ -11,8 +12,10 @@ if [[ ! "${PATH}" ~= .*${HOME}/bin.* ]];then
     echo "Please make sure the folder ~/bin is contained in the PATH"
 fi
 
-cp ti_parmed.sh ~/bin && chmod u+x ~/bin/ti_parmed.sh
-cp ti_tleap.sh ~/bin && chmod u+x ~/bin/ti_tleap.sh
-cp analysis.py ~/bin && chmod u+x ~/bin/analysis
+for bin_file in $(ls ${basedir}/bin)
+do
+    cp ${basedir}/bin/${bin_file} ~/bin && chmod u+x ~/bin/${bin_file}
+done
+
 cp -r tmpl ~/bin/
 
