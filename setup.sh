@@ -18,4 +18,4 @@ do
     cp ${basedir}/bin/${bin_file} ~/bin && chmod u+x ~/bin/${bin_file}
 done
 
-cp -r ti_tmpl ~/bin/
+cp -r ${basedir}/ti_tmpl ~/bin/

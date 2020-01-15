@@ -13,6 +13,7 @@ function myfunction()
 
 #start from 0 
 export CUDA_VISIBLE_DEVICES="2"
+
 cd $PBS_O_WORKDIR
 
 TmpID=`echo $PBS_JOBID | gawk -F. '{print $1}'`
@@ -57,7 +58,8 @@ do
     # check the out file
     if [ "$(tail -n1 ti001.out|grep Total)" == "" ]
     then
-        echo "There is some error in the ${w}"
+        echo "There is some errors in the ${w}"
+        cd ..
         continue
     else
         myfunction

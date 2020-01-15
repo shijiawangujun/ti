@@ -15,7 +15,7 @@
 #### Introduction
 由于热力学积分需要知道初始状态V0与结束状态V1，即需要知道两个状态的分子结构。同时需要注意：
 1. **两个状态如果有原子变化（种类、数目），则其中除了变化的原子，其余原子的坐标应该足够接近**
-2. **在经过第二步`parmed`之后，体系仍然呈现电中性，即tleap有可能电荷不为中性**
+2. **在经过第二步`parmed`之后，体系需要呈现电中性，即tleap有可能电荷不为中性**
 
 本项目使用Amber中的pmemd进行分子动力学模拟，其需要在一个拓扑文件(prmtop/parm7 file)中同时存在两个状态的分子结构，于是需要一步特殊的tleap。
 ```
@@ -93,3 +93,5 @@ You can `qsub Submit.sh` if you have pbs system. Or you can change way of submit
 The python3 file analysis.py is to analysis the result of thermodynamic intergal. Please run the python script at the folder where you submitted the Submit.sh. 
 
 The python script will create a file called dVdl.dat* which contains the details of every step. At last, it will print the **delta-G** of the process
+## EXAMPLE
+文件夹example中包含一个Thermodynamic Intergal的例子：将脱水酶Gphf中的Ile突变成Pro的例子，野生型为 Gphf.pdb，突变体为 GphfP.pdb。而其中 leap.in为tleap所需要的文件。
