@@ -1,0 +1,23 @@
+# load the AMBER force fields
+source leaprc.protein.ff15ipq
+source leaprc.water.tip3p
+source leaprc.gaff
+loadAmberParams frcmod.ionsjc_tip3p
+
+# load force field parameters for BNZ
+
+# load the coordinates and create the systems
+m1 = loadpdb Gphf.pdb
+m2 = loadpdb GphfP.pdb
+
+complex = combine {m1 m2}
+charge complex
+#I don't know why do this
+set default nocenter on
+
+# addions complex Na+ 14
+solvateoct complex TIP3PBOX 8
+savepdb complex complex.pdb
+saveamberparm complex complex.parm7 complex.rst7
+
+quit

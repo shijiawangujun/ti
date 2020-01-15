@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ -d ~/bin/tmpl ];then
-    tmpl="~/bin/tmpl"
+if [ -d ~/bin/ti_tmpl ];then
+    tmpl="~/bin/ti_tmpl"
 else
     echo "You haven't prepared well"
     exit 1

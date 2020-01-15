@@ -1,3 +1,17 @@
+#!/bin/bash
+
+if [ -d ~/bin/ti_tmpl ];then
+    tmpl="~/bin/ti_tmpl"
+else
+    echo "You haven't prepared well"
+    exit 1
+fi
+
+if [ ! -f complex.parm7 -o ! -f complex.rst7 ];then
+    echo "Please make sure the result file of previous step is called complex.parm7 and complex.rst7"
+fi
+
+
 echo "This is the second step of TI: parmed and get prepared for submission"
 
 read -p 'Please input the mask of T0: ' t1mask
