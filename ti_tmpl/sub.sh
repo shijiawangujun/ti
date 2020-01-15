@@ -7,9 +7,7 @@
 #PBS -j oe
 
 #start from 0 
-export CUDA_VISIBLE_DEVICES="%N%"
-PRMTOP="../../*.prmtop"
-INPCRD="../*.inpcrd"
+export CUDA_VISIBLE_DEVICES="2"
 #source /home/faculty/hfchen/environment2
 
 # This job's working directory

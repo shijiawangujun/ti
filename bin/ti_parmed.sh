@@ -64,6 +64,7 @@ sed -e "s/%MASK%/${t1mask}\n${t2mask}\n${s1mask}\n${s2mask}/g" ${tmpl}/min.tmpl 
 sed -e "s/%MASK%/${t1mask}\n${t2mask}\n${s1mask}\n${s2mask}/g" ${tmpl}/heat.tmpl > free_energy/heat.tmpl
 sed -e "s/%MASK%/${t1mask}\n${t2mask}\n${s1mask}\n${s2mask}/g" -e "s/%SUM_TIME%/${nsumlation}/g" -e "s/%NUM%/${num}/g" -e "s/%BAR%/${windows}/g" ${tmpl}/prod.tmpl > free_energy/prod.tmpl
 
+cp ${tmpl}/sub.sh free_energy
 cp ${tmpl}/smallcheck.py free_energy
 sed -e "s/%DIS%/${dis}/g" ${tmpl}/subtmpl.sh > free_energy/Submit.sh
 

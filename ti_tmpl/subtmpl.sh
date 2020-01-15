@@ -45,6 +45,7 @@ do
     sed -e "s/%L%/$w/" min.tmpl > $w/min.in
     sed -e "s/%L%/$w/" heat.tmpl > $w/heat.in
     sed -e "s/%L%/$w/" prod.tmpl > $w/ti.in
+    sed -e "s/%L%/$w/" sub.sh > $w/sub.sh
 
     cd $w
     #prepare the file
@@ -59,8 +60,21 @@ do
     if [ "$(tail -n1 ti001.out|grep Total)" == "" ]
     then
         echo "There is some errors in the ${w}"
-        cd ..
-        continue
+        echo "We try to use cpu with MPI"
+        source /home/faculty/hfchen/environment2
+        mpirun -np 5 pmemd.MPI -i ti.in -c heat.rst7 -p ti.parm7 -O -o ti001.out -inf ti001.info -e ti001.en -r ti001.rst7 -x ti001.nc -l ti001.log
+        myfunction
+        #run until the value becomes stable
+        while [ "${entest}" != "0" ]
+        do
+            pmemd -i min.in -c ti.rst7 -ref ti.rst7 -p ti.parm7 -O -o min.out -inf min.info -e min.en -r min.rst7 -l min.log
+            pmemd.cuda -i heat.in -c min.rst7 -ref ti.rst7 -p ti.parm7 -O -o heat.out -inf heat.info -e heat.en -r heat.rst7 -x heat.nc -l heat.log
+            mpirun -np 5 pmemd.MPI -i ti.in -c heat.rst7 -p ti.parm7 -O -o ti001.out -inf ti001.info -e ti001.en -r ti001.rst7 -x ti001.nc -l ti001.log
+            
+            myfunction
+        done
+        # cd ..
+        # continue
     else
         myfunction
         #run until the value becomes stable
