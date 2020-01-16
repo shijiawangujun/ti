@@ -59,10 +59,16 @@ do
     # check the out file
     if [ "$(tail -n1 ti001.out|grep Total)" == "" ]
     then
-        echo "There is some errors in the ${w}"
-        echo "We try to use cpu with MPI"
-        source /home/faculty/hfchen/environment2
+        cp ti001.out ti001_cuda.out
+        echo "There is some errors in the ${w} with pmemd.cuda"
+        echo "We try to use cpu with pmemd.MPI"
+        source /home/faculty/hfchen/environment
         mpirun -np 5 pmemd.MPI -i ti.in -c heat.rst7 -p ti.parm7 -O -o ti001.out -inf ti001.info -e ti001.en -r ti001.rst7 -x ti001.nc -l ti001.log
+        if [ "$(tail -n1 ti001.out|grep Total)" == "" ];then
+            echo "There is some errors in the ${w} with pmemd.MPI"
+            cd ..
+            continue
+        fi
         myfunction
         #run until the value becomes stable
         while [ "${entest}" != "0" ]
