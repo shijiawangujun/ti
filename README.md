@@ -97,4 +97,4 @@ The python script will create a file called *dVdl.dat* which contains the detail
 
 
 ## EXAMPLE
-文件夹example中包含一个Thermodynamic integral的例子：将脱水酶Gphf中的Ile突变成Pro的例子，野生型为 Gphf.pdb，突变体为 GphfP.pdb。而其中 leap.in为tleap所需要的文件。
+文件夹example中包含一个Thermodynamic integral的例子：将脱水酶Gphf中的leu45突变成Pro45的例子，野生型为 Gphf.pdb，突变体为 GphfP.pdb。而其中 leap.in为tleap所需要的文件。
