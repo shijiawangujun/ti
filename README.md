@@ -75,7 +75,7 @@ The file ti_parmed.sh is for the second step `parmed`.
 $ ti_parmed.sh
 ```
 The program will print:
-```
+```shell
 This is the second step of TI: parmed and get prepared for submission
 Please input the mask of T0:
 Please input the mask of T1:
