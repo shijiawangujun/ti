@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#PBS -N %NN%-%L%
+#PBS -N TI-%L%
 #PBS -q gpuq
 #PBS -l nodes=gpu04:ppn=8
 #PBS -l walltime=120:00:00

@@ -1,5 +1,5 @@
 # README
-这个此项目为上海交通大学生命科学技术学院CCMBI实验室，热力学积分(Thermodynamic Intergal)结合自由能计算的使用说明
+这个此项目为上海交通大学生命科学技术学院CCMBI实验室，热力学积分(Thermodynamic integral)结合自由能计算的使用说明
 ## 热力学积分的原理
 ## 注意：
 - 此项目主要针对某一过程
@@ -86,12 +86,15 @@ And you can follow the prompts. With all the mask inputed already, the program w
 
 After the parmed step, the program will create the Submit.sh file and template input file for the pmemd at the *free_energy* folder. At the step you need to input the *distance* of every step of the ti (recommend 0.05) and the *simulation time* of every step (recommend 600ps). 
 ### 3. 提交任务
-You can `qsub Submit.sh` if you have pbs system. Or you can change way of submitting the file to adopt your system. And try to use GPU with `pmemd.cuda` or CPU with `pmemd.MPI`. And you need to know that `pmemd.cuda` can't run the minimize with thermodynamic intergal.
+You can `qsub Submit.sh` if you have pbs system. Or you can change way of submitting the file to adopt your system. And try to use GPU with `pmemd.cuda` or CPU with `pmemd.MPI`. And you need to know that `pmemd.cuda` can't run the minimize with thermodynamic integral.
+And the `pmemd.cuda` will break down sometimes, but the `pmemd.MPI` won't do that. So the program was designed to run `pmemd.MPI` if the `pmemd.cuda` can't do the job.
 
 ### 4. 获得结果
 
-The python3 file analysis.py is to analysis the result of thermodynamic intergal. Please run the python script at the folder where you submitted the Submit.sh. 
+The python3 file ti_analysis.py is to analysis the result of thermodynamic integral. Please run the python script at the folder where you submitted the Submit.sh. 
 
-The python script will create a file called dVdl.dat* which contains the details of every step. At last, it will print the **delta-G** of the process
+The python script will create a file called *dVdl.dat* which contains the details of every step. At last, it will print the **delta-G** of the process. And the file called *dVdl.csv*  contains the simaller things. And the *dVdl.png* is the plot of the thermodynamic integral
+
+
 ## EXAMPLE
-文件夹example中包含一个Thermodynamic Intergal的例子：将脱水酶Gphf中的Ile突变成Pro的例子，野生型为 Gphf.pdb，突变体为 GphfP.pdb。而其中 leap.in为tleap所需要的文件。
+文件夹example中包含一个Thermodynamic integral的例子：将脱水酶Gphf中的Ile突变成Pro的例子，野生型为 Gphf.pdb，突变体为 GphfP.pdb。而其中 leap.in为tleap所需要的文件。
