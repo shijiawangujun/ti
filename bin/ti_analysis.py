@@ -5,15 +5,15 @@ import math
 import os,sys,glob
 import numpy as np
 import pandas as pd
-import glob
 import matplotlib.pyplot as plt
+from scipy.stats.mstats import kruskalwallis
 
 #%%
 # os.chdir('../../example/free_energy')
 
 #%%
 skip=5
-glob_pattern = 'ti001.en'
+glob_pattern = ['ti0.en','ti1.en','ti2.en']
 windows = glob.glob(r'[01].*')
 if len(windows) == 0:
     print('ERROR LOCATION')
@@ -22,7 +22,7 @@ windows.sort(key=lambda x:float(x))
 extrap = 'polyfit'
 
 #%%
-data = pd.DataFrame(columns=['mean','err','std'])
+data = pd.DataFrame(columns=['mean','err','std','pvalue'])
 data.index.name = 'step'
 # data.index.name='type'
 #%%
@@ -33,20 +33,34 @@ for window in windows:
     ln=0
     w_enfile=[]
     #to open the file with system pattern
-    for en in glob.glob(glob_pattern):
-        
+    for en in glob_pattern:       
         with open(en,'r') as en_file:
             for line in en_file:
                 ln += 1
                 if ln >skip and (line.startswith('L9') and not 'dV/dlambda' in line):
                     w_enfile.append(float(line.split()[5]))
 
+    plt.switch_backend('agg')
+
+    fig,ax = plt.figure(figsize=(14,8),dpi=300)
+    ax.add_subplot(1,1,1)
+    length = len(w_enfile)
+    for i in range(0,3,1):
+        ax.plot(x=w_enfile[i*length//3:(i+1)*length//3],kind='kde',label='ti{}'.format(i))
+    ax.set_title('Comparation',fontsize='xx-large')
+    ax.set_xlabel('dG(kcal/mol)',fontsize='x-large')
+    ax.set_ylabel('Density',fontsize='x-large')
+
+    fig.savefig('ti{}.png'.format(window))
+    fig.savefig('ti{}.pdf'.format(window))
+
     mean,std = np.mean(w_enfile),np.std(w_enfile)
-    err=std/(math.sqrt(len(w_enfile))-1)
+    err = std/(math.sqrt(len(w_enfile))-1)
+    pvalue,h = kruskalwallis(w_enfile[0:length//3],w_enfile[length//3:length*2//3],w_enfile[length//3*2:length])
 
     w_enfile = pd.DataFrame(w_enfile)
     w_enfile.to_csv('en.csv',header=False,index=False)
-    tmp_series = pd.Series({'mean':mean,'err':err,'std':std},name=float(window))
+    tmp_series = pd.Series({'mean':mean,'err':err,'std':std,'pvalue':pvalue},name=float(window))
     data = data.append(tmp_series)
     os.chdir(cwd)
 

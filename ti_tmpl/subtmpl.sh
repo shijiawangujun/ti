@@ -5,12 +5,6 @@
 #PBS -l walltime=120:00:00
 #PBS -j oe
 
-function myfunction()
-{
-    /home/apps/anaconda3/bin/python ${top}/smallcheck.py
-    entest=$?
-}
-
 #start from 0 
 export CUDA_VISIBLE_DEVICES="2"
 
@@ -54,7 +48,9 @@ do
     #rum md simulation
     pmemd -i min.in -c ti.rst7 -ref ti.rst7 -p ti.parm7 -O -o min.out -inf min.info -e min.en -r min.rst7 -l min.log
     pmemd.cuda -i heat.in -c min.rst7 -ref ti.rst7 -p ti.parm7 -O -o heat.out -inf heat.info -e heat.en -r heat.rst7 -x heat.nc -l heat.log
-    pmemd.cuda -i ti.in -c heat.rst7 -p ti.parm7 -O -o ti001.out -inf ti001.info -e ti001.en -r ti001.rst7 -x ti001.nc -l ti001.log
+    for num in $(seq 0 1 3)
+    do
+    pmemd.cuda -i ti.in -c heat.rst7 -p ti.parm7 -O -o ti001.out -inf ti001.info -e ti${num}.en -r ti001.rst7 -x ti001.nc -l ti001.log
     
     # check the out file
     if [ "$(tail -n1 ti001.out|grep Total)" == "" ]
@@ -63,36 +59,38 @@ do
         echo "There is some errors in the ${w} with pmemd.cuda"
         echo "We try to use cpu with pmemd.MPI"
         source /home/faculty/hfchen/environment
-        mpirun -np 5 pmemd.MPI -i ti.in -c heat.rst7 -p ti.parm7 -O -o ti001.out -inf ti001.info -e ti001.en -r ti001.rst7 -x ti001.nc -l ti001.log
+        mpirun -np 5 pmemd.MPI -i ti.in -c heat.rst7 -p ti.parm7 -O -o ti001.out -inf ti001.info -e ti${num}.en -r ti001.rst7 -x ti001.nc -l ti001.log
         if [ "$(tail -n1 ti001.out|grep Total)" == "" ];then
             echo "There is some errors in the ${w} with pmemd.MPI"
-            cd ..
+            # cd ..
             continue
         fi
-        myfunction
+        entest=$(awk '/^L9/{if(NR >10 && sqrt($9 * $9)>1000000)print "ERROR";}' ti${num}.en)
         #run until the value becomes stable
-        while [ "${entest}" != "0" ]
+        while [ "${entest}" != "" ]
         do
             pmemd -i min.in -c ti.rst7 -ref ti.rst7 -p ti.parm7 -O -o min.out -inf min.info -e min.en -r min.rst7 -l min.log
             pmemd.cuda -i heat.in -c min.rst7 -ref ti.rst7 -p ti.parm7 -O -o heat.out -inf heat.info -e heat.en -r heat.rst7 -x heat.nc -l heat.log
             mpirun -np 5 pmemd.MPI -i ti.in -c heat.rst7 -p ti.parm7 -O -o ti001.out -inf ti001.info -e ti001.en -r ti001.rst7 -x ti001.nc -l ti001.log
             
-            myfunction
+            entest=$(awk '/^L9/{if(NR >10 && sqrt($9 * $9)>1000000)print "ERROR";}' ti${num}.en)
         done
         # cd ..
         # continue
     else
-        myfunction
+        entest=$(awk '/^L9/{if(NR >10 && sqrt($9 * $9)>1000000)print "ERROR";}' ti${num}.en)
+        # myfunction
         #run until the value becomes stable
-        while [ "${entest}" != "0" ]
+        while [ "${entest}" != "" ]
         do
             pmemd -i min.in -c ti.rst7 -ref ti.rst7 -p ti.parm7 -O -o min.out -inf min.info -e min.en -r min.rst7 -l min.log
             pmemd.cuda -i heat.in -c min.rst7 -ref ti.rst7 -p ti.parm7 -O -o heat.out -inf heat.info -e heat.en -r heat.rst7 -x heat.nc -l heat.log
             pmemd.cuda -i ti.in -c heat.rst7 -p ti.parm7 -O -o ti001.out -inf ti001.info -e ti001.en -r ti001.rst7 -x ti001.nc -l ti001.log
             
-            myfunction
+            entest=$(awk '/^L9/{if(NR >10 && sqrt($9 * $9)>1000000)print "ERROR";}' ti${num}.en)
         done
     fi
+    done
     cd ..
 done
 
