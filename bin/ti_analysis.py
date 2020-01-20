@@ -42,21 +42,25 @@ for window in windows:
 
     plt.switch_backend('agg')
 
-    fig,ax = plt.figure(figsize=(14,8),dpi=300)
-    ax.add_subplot(1,1,1)
+    fig = plt.figure(figsize=(14,8),dpi=300)
+    ax = fig.add_subplot(1,1,1)
     length = len(w_enfile)
+    sall = pd.Series(w_enfile)
     for i in range(0,3,1):
-        ax.plot(x=w_enfile[i*length//3:(i+1)*length//3],kind='kde',label='ti{}'.format(i))
+        s = sall[i*length//3:(i+1)*length//3]
+        s.plot(ax=ax,kind='kde',label='ti{}'.format(i))
+        # ax.plot(x=w_enfile[i*length//3:(i+1)*length//3],kind='kde',label='ti{}'.format(i))
     ax.set_title('Comparation',fontsize='xx-large')
     ax.set_xlabel('dG(kcal/mol)',fontsize='x-large')
     ax.set_ylabel('Density',fontsize='x-large')
+    ax.legend(loc='best')
 
     fig.savefig('ti{}.png'.format(window))
     fig.savefig('ti{}.pdf'.format(window))
 
     mean,std = np.mean(w_enfile),np.std(w_enfile)
     err = std/(math.sqrt(len(w_enfile))-1)
-    pvalue,h = kruskalwallis(w_enfile[0:length//3],w_enfile[length//3:length*2//3],w_enfile[length//3*2:length])
+    h,pvalue = kruskalwallis(w_enfile[0:length//3],w_enfile[length//3:length*2//3],w_enfile[length//3*2:length])
 
     w_enfile = pd.DataFrame(w_enfile)
     w_enfile.to_csv('en.csv',header=False,index=False)
