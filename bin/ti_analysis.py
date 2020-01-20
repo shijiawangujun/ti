@@ -10,15 +10,19 @@ from scipy.stats.mstats import kruskalwallis
 
 #%%
 # os.chdir('../../example/free_energy')
+if len(sys.argv) > 1 && sys.argv[1] == '-n':
+    repeat = int(float(sys.argv[2]))
+else:
+    repeat = 1
 
 #%%
-skip=5
-glob_pattern = ['ti0.en','ti1.en','ti2.en']
+skip = 50
+glob_pattern = [ 'ti{}.en'.format(x) for in range(0,repeat) ]
 windows = glob.glob(r'[01].*')
 if len(windows) == 0:
     print('ERROR LOCATION')
     sys.exit(1)
-windows.sort(key=lambda x:float(x))
+windows.sort(key=float)
 extrap = 'polyfit'
 
 #%%
@@ -30,26 +34,32 @@ cwd = os.getcwd()
 for window in windows:
     os.chdir(window)
     
-    ln=0
     w_enfile=[]
     #to open the file with system pattern
-    for en in glob_pattern:       
+    for en in glob_pattern:
+        ln = 0
         with open(en,'r') as en_file:
             for line in en_file:
                 ln += 1
                 if ln >skip and (line.startswith('L9') and not 'dV/dlambda' in line):
                     w_enfile.append(float(line.split()[5]))
 
+    repeat_split = np.array_split(w_enfile,repeat)
+
     plt.switch_backend('agg')
 
     fig = plt.figure(figsize=(14,8),dpi=300)
     ax = fig.add_subplot(1,1,1)
-    length = len(w_enfile)
-    sall = pd.Series(w_enfile)
-    for i in range(0,3,1):
-        s = sall[i*length//3:(i+1)*length//3]
+    # length = len(w_enfile)
+    # sall = pd.Series(w_enfile)
+    # for i in range(0,repeat,1):
+    #     s = sall[i*length//repeat:(i+1)*length//repeat]
+    #     s.plot(ax=ax,kind='kde',label='ti{}'.format(i))
+
+    for st in repeat_split:
+        s = pd.Series(st)
         s.plot(ax=ax,kind='kde',label='ti{}'.format(i))
-        # ax.plot(x=w_enfile[i*length//3:(i+1)*length//3],kind='kde',label='ti{}'.format(i))
+
     ax.set_title('Comparation',fontsize='xx-large')
     ax.set_xlabel('dG(kcal/mol)',fontsize='x-large')
     ax.set_ylabel('Density',fontsize='x-large')
@@ -58,9 +68,9 @@ for window in windows:
     fig.savefig('ti{}.png'.format(window))
     fig.savefig('ti{}.pdf'.format(window))
 
-    mean,std = np.mean(w_enfile),np.std(w_enfile)
+    mean,std = np.mean(w_enfile),np.std(w_enfile,ddof=1)
     err = std/(math.sqrt(len(w_enfile))-1)
-    h,pvalue = kruskalwallis(w_enfile[0:length//3],w_enfile[length//3:length*2//3],w_enfile[length//3*2:length])
+    h,pvalue = kruskalwallis(repeat_split)
 
     w_enfile = pd.DataFrame(w_enfile)
     w_enfile.to_csv('en.csv',header=False,index=False)
@@ -71,9 +81,6 @@ for window in windows:
 data.to_csv(path_or_buf='dVdl.csv')
 #%%
 y = np.array(data['mean'])
-# print(y)
-# print(data.mean)
-# print(np.array(data['mean']))
 x = np.array(data.index)
 
 if extrap == 'linear':
@@ -119,8 +126,6 @@ plt.switch_backend('agg')
 fig = plt.figure(figsize=(14,8),dpi=300)
 ax = fig.add_subplot(1,1,1)
 
-# ax.stackplot(x=data.index,y=data.mean)
-# ax.plot(x=data.index,y=data.mean,fmt='o-',col='#ADA996')
 ax.fill_between(x=x,y1=y,alpha=0.9,color='#A5FECB')
 ax.errorbar(x=x,y=y,yerr=data.err,fmt='o--',ecolor='#5433FF',c='#20BDFF')
 ax.set_xticks(np.arange(0,1.01,0.1))

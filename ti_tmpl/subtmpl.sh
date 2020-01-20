@@ -2,7 +2,6 @@
 #PBS -N TI
 #PBS -q gpuq
 #PBS -l nodes=gpu02:ppn=5
-#PBS -l walltime=120:00:00
 #PBS -j oe
 
 #start from 0 
