@@ -1,5 +1,5 @@
 # README
-这个此项目为上海交通大学生命科学技术学院CCMBI实验室，热力学积分(Thermodynamic integral)结合自由能计算的使用说明
+这个此项目为热力学积分(Thermodynamic integral)结合自由能计算的使用说明
 ## 热力学积分的原理
 ## 注意：
 - 此项目主要针对某一过程

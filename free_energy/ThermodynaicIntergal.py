@@ -4,11 +4,6 @@ import os,sys,re
 import parmed as pmd
 from parmed.tools import tiMerge
 
-if len(sys.argv) == 1:
-    tleap
-
-for arg in sys.argv:
-
 
 with open('tmpfile','w') as f:
     tiMerge.output = f
@@ -16,7 +11,6 @@ with open('tmpfile','w') as f:
     act = tiMerge(parm,':1-14',':15-28', ':4@S2P', ':18@O2P')
     act.execute()
     parm.save('filename')
-
 
 #%%
 a = input('cout')

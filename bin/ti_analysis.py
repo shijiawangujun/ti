@@ -10,14 +10,14 @@ from scipy.stats.mstats import kruskalwallis
 
 #%%
 # os.chdir('../../example/free_energy')
-if len(sys.argv) > 1 && sys.argv[1] == '-n':
+if len(sys.argv) > 1 and sys.argv[1] == '-n':
     repeat = int(float(sys.argv[2]))
 else:
     repeat = 1
 
 #%%
 skip = 50
-glob_pattern = [ 'ti{}.en'.format(x) for in range(0,repeat) ]
+glob_pattern = [ 'ti{}.en'.format(x) for x in range(0,repeat) ]
 windows = glob.glob(r'[01].*')
 if len(windows) == 0:
     print('ERROR LOCATION')
@@ -56,7 +56,7 @@ for window in windows:
     #     s = sall[i*length//repeat:(i+1)*length//repeat]
     #     s.plot(ax=ax,kind='kde',label='ti{}'.format(i))
 
-    for st in repeat_split:
+    for i,st in enumerate(repeat_split):
         s = pd.Series(st)
         s.plot(ax=ax,kind='kde',label='ti{}'.format(i))
 
